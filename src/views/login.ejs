@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Chat con Gemini</title>
+    <!-- Bulma CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css">
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .login-container {
+            min-height: 100vh;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        .login-card {
+            max-width: 400px;
+            margin: 0 auto;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+        .login-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 15px 15px 0 0;
+            padding: 2rem;
+            text-align: center;
+        }
+        .login-form {
+            padding: 2rem;
+        }
+        .field .control .input {
+            border-radius: 25px;
+            padding: 0.75rem 1rem;
+        }
+        .button.is-primary {
+            border-radius: 25px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border: none;
+            font-weight: 600;
+        }
+        .button.is-primary:hover {
+            background: linear-gradient(135deg, #5a6fd8 0%, #6a4190 100%);
+        }
+        .tab-switch {
+            margin-bottom: 1.5rem;
+        }
+        .tabs ul {
+            border-bottom: 2px solid #dbdbdb;
+        }
+        .tabs li.is-active a {
+            border-bottom-color: #667eea;
+            color: #667eea;
+        }
+        .notification.is-danger {
+            border-radius: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="login-container is-flex is-align-items-center is-justify-content-center">
+        <div class="login-card has-background-white">
+            <div class="login-header">
+                <i class="fas fa-robot fa-3x mb-3"></i>
+                <h1 class="title is-3 has-text-white mb-0">Chat con Gemini</h1>
+                <p class="subtitle is-6 has-text-white-ter mt-2">Inicia sesión para continuar</p>
+            </div>
+            
+            <div class="login-form">
+                <!-- Tab Navigation -->
+                <div class="tabs is-centered tab-switch">
+                    <ul>
+                        <li class="is-active" id="login-tab">
+                            <a onclick="switchTab('login')">
+                                <span class="icon is-small"><i class="fas fa-sign-in-alt"></i></span>
+                                <span>Iniciar Sesión</span>
+                            </a>
+                        </li>
+                        <li id="register-tab">
+                            <a onclick="switchTab('register')">
+                                <span class="icon is-small"><i class="fas fa-user-plus"></i></span>
+                                <span>Registrarse</span>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Error/Success Messages -->
+                <div id="message-container"></div>
+
+                <!-- Login Form -->
+                <form id="login-form" class="auth-form">
+                    <div class="field">
+                        <label class="label">Email</label>
+                        <div class="control has-icons-left">
+                            <input class="input" type="email" id="login-email" placeholder="tu@email.com" required>
+                            <span class="icon is-small is-left">
+                                <i class="fas fa-envelope"></i>
+                            </span>
+                        </div>
+                    </div>
+
+                    <div class="field">
+                        <label class="label">Contraseña</label>
+                        <div class="control has-icons-left">
+                            <input class="input" type="password" id="login-password" placeholder="••••••••" required>
+                            <span class="icon is-small is-left">
+                                <i class="fas fa-lock"></i>
+                            </span>
+                        </div>
+                    </div>
+
+                    <div class="field">
+                        <div class="control">
+                            <button type="submit" class="button is-primary is-fullwidth" id="login-btn">
+                                <span class="icon">
+                                    <i class="fas fa-sign-in-alt"></i>
+                                </span>
+                                <span>Iniciar Sesión</span>
+                            </button>
+                        </div>
+                    </div>
+                </form>
+
+                <!-- Register Form -->
+                <form id="register-form" class="auth-form" style="display: none;">
+                    <div class="field">
+                        <label class="label">Email</label>
+                        <div class="control has-icons-left">
+                            <input class="input" type="email" id="register-email" placeholder="tu@email.com" required>
+                            <span class="icon is-small is-left">
+                                <i class="fas fa-envelope"></i>
+                            </span>
+                        </div>
+                    </div>
+
+                    <div class="field">
+                        <label class="label">Contraseña</label>
+                        <div class="control has-icons-left">
+                            <input class="input" type="password" id="register-password" placeholder="••••••••" required minlength="6">
+                            <span class="icon is-small is-left">
+                                <i class="fas fa-lock"></i>
+                            </span>
+                        </div>
+                    </div>
+
+                    <div class="field">
+                        <label class="label">Confirmar Contraseña</label>
+                        <div class="control has-icons-left">
+                            <input class="input" type="password" id="register-confirm-password" placeholder="••••••••" required minlength="6">
+                            <span class="icon is-small is-left">
+                                <i class="fas fa-lock"></i>
+                            </span>
+                        </div>
+                    </div>
+
+                    <div class="field">
+                        <div class="control">
+                            <button type="submit" class="button is-primary is-fullwidth" id="register-btn">
+                                <span class="icon">
+                                    <i class="fas fa-user-plus"></i>
+                                </span>
+                                <span>Crear Cuenta</span>
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Supabase JS -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script>
+        // Initialize Supabase client
+        const supabaseUrl = '<%= supabaseUrl %>';
+        const supabaseKey = '<%= supabaseKey %>';
+        const { createClient } = supabase;
+        const supabaseClient = createClient(supabaseUrl, supabaseKey);
+
+        // DOM elements
+        const loginForm = document.getElementById('login-form');
+        const registerForm = document.getElementById('register-form');
+        const messageContainer = document.getElementById('message-container');
+
+        // Tab switching
+        function switchTab(tab) {
+            const loginTab = document.getElementById('login-tab');
+            const registerTab = document.getElementById('register-tab');
+            
+            if (tab === 'login') {
+                loginTab.classList.add('is-active');
+                registerTab.classList.remove('is-active');
+                loginForm.style.display = 'block';
+                registerForm.style.display = 'none';
+            } else {
+                registerTab.classList.add('is-active');
+                loginTab.classList.remove('is-active');
+                registerForm.style.display = 'block';
+                loginForm.style.display = 'none';
+            }
+            clearMessages();
+        }
+
+        // Message display functions
+        function showMessage(message, type = 'danger') {
+            messageContainer.innerHTML = `
+                <div class="notification is-${type}">
+                    <button class="delete" onclick="clearMessages()"></button>
+                    ${message}
+                </div>
+            `;
+        }
+
+        function clearMessages() {
+            messageContainer.innerHTML = '';
+        }
+
+        // Login form handler
+        loginForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const email = document.getElementById('login-email').value;
+            const password = document.getElementById('login-password').value;
+            const loginBtn = document.getElementById('login-btn');
+            
+            loginBtn.classList.add('is-loading');
+            clearMessages();
+            
+            try {
+                const { data, error } = await supabaseClient.auth.signInWithPassword({
+                    email,
+                    password
+                });
+                
+                if (error) throw error;
+                
+                showMessage('¡Inicio de sesión exitoso! Redirigiendo...', 'success');
+                
+                // Store session and redirect
+                setTimeout(() => {
+                    window.location.href = '/';
+                }, 1000);
+                
+            } catch (error) {
+                showMessage(error.message || 'Error al iniciar sesión');
+            } finally {
+                loginBtn.classList.remove('is-loading');
+            }
+        });
+
+        // Register form handler
+        registerForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const email = document.getElementById('register-email').value;
+            const password = document.getElementById('register-password').value;
+            const confirmPassword = document.getElementById('register-confirm-password').value;
+            const registerBtn = document.getElementById('register-btn');
+            
+            if (password !== confirmPassword) {
+                showMessage('Las contraseñas no coinciden');
+                return;
+            }
+            
+            registerBtn.classList.add('is-loading');
+            clearMessages();
+            
+            try {
+                const { data, error } = await supabaseClient.auth.signUp({
+                    email,
+                    password
+                });
+                
+                if (error) throw error;
+                
+                showMessage('¡Cuenta creada exitosamente! Verifica tu email y luego inicia sesión.', 'success');
+                
+                // Switch to login tab after successful registration
+                setTimeout(() => {
+                    switchTab('login');
+                }, 2000);
+                
+            } catch (error) {
+                showMessage(error.message || 'Error al crear la cuenta');
+            } finally {
+                registerBtn.classList.remove('is-loading');
+            }
+        });
+
+        // Check if user is already logged in
+        supabaseClient.auth.getSession().then(({ data: { session } }) => {
+            if (session) {
+                window.location.href = '/';
+            }
+        });
+    </script>
+</body>
+</html>
