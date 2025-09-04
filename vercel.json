@@ -13,30 +13,22 @@
       }
     }
   ],
-  "routes": [
+  "rewrites": [
     {
-      "src": "/public/(.*)",
-      "dest": "/public/$1"
+      "source": "/css/(.*)",
+      "destination": "/public/css/$1"
     },
     {
-      "src": "/css/(.*)",
-      "dest": "/public/css/$1"
+      "source": "/js/(.*)",
+      "destination": "/public/js/$1"
     },
     {
-      "src": "/js/(.*)",
-      "dest": "/public/js/$1"
+      "source": "/auth/(.*)",
+      "destination": "/app.js"
     },
     {
-      "src": "/auth/(.*)",
-      "dest": "/app.js"
-    },
-    {
-      "src": "/api/(.*)",
-      "dest": "/app.js"
-    },
-    {
-      "src": "/(.*)",
-      "dest": "/app.js"
+      "source": "/api/(.*)",
+      "destination": "/app.js"
     }
   ],
   "env": {
